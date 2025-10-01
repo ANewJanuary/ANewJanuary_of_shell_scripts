@@ -1,5 +1,9 @@
 #!/bin/sh
+
+# a quick activation script for stable diffusion webui on linux with
+# amd gpus
 cd ~/stable-diffusion-webui
+
 # Optional: "git pull" to update the repository
 source venv/bin/activate
 
