@@ -1,3 +1,0 @@
-#!/bin/sh
-cd $HOME
-exec chpst -u icarus:icarus /usr/bin/emacs --fg-daemon=icarus-emacsd 2>&1
