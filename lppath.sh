@@ -4,7 +4,7 @@ if [[ $1 == "n" ]]; then
 				select=$(find . -print | fzf)
 				ext=$(basename "$select")
 				name=$(echo "${ext%.*}")
-				echo -e -n "[[$name]]" | wl-copy
+				echo -e -n "_$name _" | wl-copy
 
 elif [[ $1 == "p" ]]; then
 				cd ~/Vshrd/Learner-Portfolio
