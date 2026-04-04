@@ -1,6 +1,10 @@
+#!/bin/bash
+#
+cd "$HOME"
+
 SEARCH_PATHS=(
-  "$HOME/.config"
-  "$HOME/Vshrd"
+  ".config"
+  "Vshrd"
 )
 DRAWIO_DIR="$HOME/clones/drawio-desktop"
 
