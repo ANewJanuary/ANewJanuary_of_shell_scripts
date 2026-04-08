@@ -54,6 +54,10 @@ case "$selected" in
   *.excalidraw|*.excalidraw.json)
     xdg-open "$selected" &
     ;;
+  # Emacs
+  *.org)
+    emacsclient "$selected" &
+    ;;
 
   # Xournal++ files
   *.xopp)
