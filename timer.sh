@@ -1,16 +1,17 @@
-# #!/bin/bash
-
-# # 30 minutes countdown  1800000
-# COLOR="rgb(ffffff)"  # White color
-
-# setsid hyprctl keyword animations:enabled false; hyprctl notify 1 2000 "$COLOR" "fontsize:17 ⏰ 30:00"
-#
-
 #!/bin/bash
 
-DURATION=$(($1 * 60))  # 30 minutes
+# For gui entry, use zenity --entry
+arg=$1
+if [[ $arg == "k" ]]; then
+    dunstctl close-all
+    killall timer.sh
+    exit
+fi
 
-echo "Starting $1 minute countdown..."
+entry=$(zenity --entry)
+DURATION=$(($entry * 60))  # 30 minutes
+
+echo "Starting $entry minute countdown..."
 
 # Clear existing notifications
 dunstctl close-all
@@ -54,5 +55,5 @@ while [ $remaining -gt 0 ]; do
 done
 
 # Final notification
-dunstify -r 88888 -t 5000 -u critical "✅ Timer Complete!" "$1 minutes have elapsed"
+dunstify -r 88888 -t 5000 -u critical "✅ Timer Complete!" "$entry minutes have elapsed"
 echo "Timer finished!"

@@ -1,10 +1,9 @@
 #!/bin/bash
 #
-cd "$HOME"
+cd "$HOME/Vshrd/"
 
 SEARCH_PATHS=(
-  ".config"
-  "Vshrd"
+  "."
 )
 DRAWIO_DIR="$HOME/clones/drawio-desktop"
 
@@ -16,9 +15,9 @@ file=$(find \
   ! -path '*/.git/*' \
   ! -path '*/node_modules/*' \
   ! -path '*/__pycache__/*' \
-  | fuzzel --dmenu -l 10 -w 60)
+  | fuzzel --dmenu -l 10 -w 80)
 
-selected="/home/artin/$file"
+selected="/home/artin/Vshrd/$file"
 # Exit if nothing was selected
 [ -z "$selected" ] && exit 0
 
@@ -28,7 +27,7 @@ case "$selected" in
   *.sh|*.bash|*.fish|*.zsh|\
   *.py|*.rs|*.go|*.c|*.h|*.cpp|*.hpp|*.java|\
   *.js|*.ts|*.lua|*.nix|*.tex|*.typ|\
-  *.css|*.html|*.xml|*.svg|\
+  *.css|*.html|*.xml|\
   *.conf|*.ini|*.cfg)
     $TERMINAL -e hx "$selected" &
     ;;
@@ -66,12 +65,12 @@ case "$selected" in
 
   # Images
   *.png|*.jpg|*.jpeg|*.gif|*.webp|*.bmp)
-    imv "$selected" &
+    mupdf "$selected" &
     ;;
 
   *.svg)
     # SVGs could be edited (text) or viewed (image) — defaulting to view
-    imv "$selected" &
+    mupdf "$selected" &
     ;;
 
   # Fallback: try to detect if it's a text file, otherwise xdg-open

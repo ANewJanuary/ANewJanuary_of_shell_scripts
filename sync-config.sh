@@ -3,6 +3,7 @@
 # List of config items to sync, parent directory
 folders=(
   "kitty/"
+  "swappy/"
   "helix/"
   "waybar/"
   "yazi/"
@@ -30,8 +31,11 @@ if [[ "$1" == "push" ]]; then
     echo "Pushing $local to $sync"
     for folder in "${folders[@]}"
     do
-      cp -f -r "$local/$folder" "$sync/"
-      echo "Copied $folder to $sync/$folder"
+      if cp -f -r "$local/$folder" "$sync/"; then
+        echo "Copied $folder to $sync/$folder"
+      else
+        echo "Pushing $folder failed"
+      fi
     done
 fi
 
@@ -39,25 +43,10 @@ if [[ "$1" == "pull" ]]; then
     echo "Pull from $sync to $local"
     for folder in "${folders[@]}"
     do
-      cp -f -r "$sync/$folder" "$local/"
-      echo "Copied $folder to $local/$folder"
+      if cp -f -r "$sync/$folder" "$local/"; then
+        echo "Copied $folder to $local/$folder"
+      else
+        echo "Pulling $folder failed"
+      fi
     done
 fi
-# elif [[ "$1" == "pull" ]]; then
-# fi
-
-# if [[ "$1" == "push" ]]; then
-#   for ((i = 0; i < ${#folders[@]}; i++)); do
-#     echo "${src[i]}"
-#     cp -f -r "${src[i]}" "$dest"
-#   done
-# elif [[ "$1" == "pull" ]]; then
-#   for ((i = 0; i < ${#src[@]}; i++)); do
-#     echo "${dst[i]}"
-#     cp -f -r "${dst[i]}" "$source"
-#   done
-# elif [[ $1 == "" ]]; then
-#   echo "No arguments provided."
-#   echo "say push to push your local to vshrd"
-#   echo "say pull to push your local to vshrd"
-# fi
