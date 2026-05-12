@@ -33,7 +33,7 @@ while [ $remaining -gt 0 ]; do
     urg=$(( ($DURATION * 30) / 100 ))
     if [ $remaining -lt $crit ]; then  # Last 5 minutes
         urgency="critical"
-        color="#FF0000"
+        color="#bf616a"
     elif [ $remaining -lt $urg ]; then  # Last 10 minutes
         urgency="normal"
         color="#FFA500"

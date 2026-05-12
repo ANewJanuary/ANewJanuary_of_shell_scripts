@@ -6,6 +6,7 @@ folders=(
   "swappy/"
   "helix/"
   "waybar/"
+  "nvim/"
   "yazi/"
   "zathura/"
   "fish/"
