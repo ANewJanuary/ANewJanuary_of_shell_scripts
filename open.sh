@@ -100,7 +100,7 @@ choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
     ;;
 
   *.kra)
-    (cd "$DRAWIO_DIR" && npm start -- "$(realpath "$selected")") &>/dev/null &
+    (krita "$selected" &
     ;;
 
   *.excalidraw|*.excalidraw.json)
