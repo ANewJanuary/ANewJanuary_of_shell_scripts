@@ -5,7 +5,7 @@ MACRO_DIR="$HOME/Vshrd/macros"
 cd "$MACRO_DIR"
 
 # Select snippet
-file=$(ls $MACRO_DIR | fuzzel --dmenu -l 10 -w 80)
+file=$(fzf -e)
 [ -z "$file" ] && exit 0
 
 cat $file
@@ -31,9 +31,9 @@ for ph in $placeholders; do
 
   # Prompt user
   if [ -n "$last_value" ]; then
-    input=$(zenity --entry --text="Pick $ph or reuse $last_value")
+    read -rp "Value for $name (Enter = reuse '$last_value'): " input
   else
-    input=$(zenity --entry --text="Pick $ph")
+    read -rp "Value for $name: " input
   fi
 
   if [ -z "$input" ]; then
@@ -53,4 +53,3 @@ done
 printf "%s" "$content" | wl-copy
 
 echo "Snippet expanded and copied to clipboard."
-exit 0
