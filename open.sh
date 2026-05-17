@@ -62,7 +62,7 @@ selected="$HOME/$file"
 update_recents "$selected"
 
 case "$selected" in
-  *.md|*.txt|*.puml|*.yaml|*.yml|*.toml|*.json|\
+  *.md|*.txt|*.puml|*.yaml|*.jsonc|*.yml|*.toml|*.json|\
   *.sh|*.bash|*.fish|*.zsh|*.kdl|\
   *.py|*.rs|*.go|*.c|*.h|*.cpp|*.hpp|*.java|\
   *.js|*.ts|*.lua|*.nix|*.tex|*.typ|\
@@ -99,10 +99,6 @@ choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
     (cd "$DRAWIO_DIR" && npm start -- "$(realpath "$selected")") &>/dev/null &
     ;;
 
-  *.kra)
-    (krita "$selected" &
-    ;;
-
   *.excalidraw|*.excalidraw.json)
     xdg-open "$selected" &
     ;;
@@ -118,6 +114,11 @@ choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
   *.svg)
     mupdf "$selected" &
     ;;
+
+  *.kra)
+    krita "$selected" &
+    ;;
+
   *.ods)
     libreoffice "$selected" &
     ;;
