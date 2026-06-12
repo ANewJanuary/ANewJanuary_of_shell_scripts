@@ -6,7 +6,6 @@ SEARCH_PATHS=(
   "Vshrd/"
   ".config/"
 )
-DRAWIO_DIR="$HOME/clones/drawio-desktop"
 TERMINAL="kitty"  # change to kitty, alacritty, etc.
 
 RECENT_FILE="$HOME/Vshrd/shell-scripts/open_sh_recents"
@@ -38,7 +37,7 @@ if $show_recent; then
   file=$(
     while IFS= read -r f; do
       [ -f "$f" ] && realpath --relative-to="$HOME/" "$f"
-    done < "$RECENT_FILE" | fuzzel --dmenu -l 10 -w 80
+    done < "$RECENT_FILE" | fuzzel --dmenu -l 10 -w 100
   )
 else
   file=$(
@@ -49,7 +48,7 @@ else
       ! -path '*/node_modules/*' \
       ! -path '*/__pycache__/*' \
       ! -path '*/music/*' \
-      | fuzzel --dmenu -l 10 -w 80
+      | fuzzel --dmenu -l 10 -w 100
   )
 fi
 
@@ -65,9 +64,9 @@ case "$selected" in
   *.md|*.txt|*.puml|*.yaml|*.jsonc|*.yml|*.toml|*.json|\
   *.sh|*.bash|*.fish|*.zsh|*.kdl|\
   *.py|*.rs|*.go|*.c|*.h|*.cpp|*.hpp|*.java|\
-  *.js|*.ts|*.lua|*.nix|*.tex|*.typ|\
+  *.js|*.ts|*.lua|*.nix|*.tex|*.typ|*.qmd|\
   *.css|*.html|*.xml|\
-  *.conf|*.ini|*.cfg|*.org)
+  *.conf|*.ini|*.cfg|*.org|*.asy|*.qml)
     echo $selected
     "$HOME/Vshrd/shell-scripts/neovim_handler.sh" "$selected" &
     ;;
@@ -96,7 +95,7 @@ choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
     ;;
 
   *.drawio)
-    (cd "$DRAWIO_DIR" && npm start -- "$(realpath "$selected")") &>/dev/null &
+    drawio "$selected" &
     ;;
 
   *.excalidraw|*.excalidraw.json)

@@ -1,14 +1,9 @@
 #!/bin/bash
 
 cd /home/artin/Vshrd/macros
-read -rp "Name: " name
 
-if [[ $name == "" ]]; then
-				echo "No name given"
-else
-				touch temp
-				hx temp
+name=$(zenity --entry --text="Name: WARNING: text is taken from clipboard!")
+text=$(wl-paste)
 
-				mv temp "$name"
-				echo "$name" >> index
-fi
+touch $name
+wl-paste >> $name

@@ -10,7 +10,7 @@ if [[ $choice == "nofortune" ]]; then
   # echo "${nos[$index]}" | fold -s -w $(($(tput cols) - 5 )) | cowsay -f small -n -C | lolcat -b -r
   printf '\e[48;5;0m' # Set background to black (code 0)              [~]
   random_element=$(printf "%s\n" "${nos[@]}" | shuf -n 1)
-  echo -e "No. $random_element \n" | fold -s -w $(($(tput cols) - 6 )) # | cowsay -f small -n -C | lolcat -b -r -g f5f5f5:eceff4
+  echo -e "No. $random_element \n" | fold -s -w $(($(tput cols))) # | cowsay -f small -n -C | lolcat -b -r -g f5f5f5:eceff4
   printf '\e[0m'      # Reset colors
 fi
 if [[ $choice == "fortune" ]]; then

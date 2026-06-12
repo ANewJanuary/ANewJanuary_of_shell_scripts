@@ -3,12 +3,8 @@ set -euo pipefail
 
 SOCKET="/tmp/nvimsocket"
 
-if [[ $# -lt 1 ]]; then
-  echo "usage: $0 <file> [line] [col]" >&2
-  exit 1
-fi
 
-FILE="$1"
+FILE="${1:-}"
 LINE="${2:-}"
 COL="${3:-}"
 
@@ -36,7 +32,7 @@ open_target() {
     nvim --server "$SOCKET" --remote "+call cursor($LINE,$COL)" "$FILE"
   elif [[ -n "$LINE" ]]; then
     nvim --server "$SOCKET" --remote "+$LINE" "$FILE"
-  else
+  elif [[ -n "$FILE" ]]; then
     nvim --server "$SOCKET" --remote "$FILE"
   fi
 }

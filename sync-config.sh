@@ -4,17 +4,14 @@
 folders=(
   "kitty/"
   "swappy/"
-  "helix/"
-  "waybar/"
   "nvim/"
   "yazi/"
   "zathura/"
   "fish/"
-  "hypr/"
   "zellij/"
   "fuzzel/"
   "ssh/"
-  "emacs/"
+  "niri/"
 )
 
 # local locations
