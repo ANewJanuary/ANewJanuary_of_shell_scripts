@@ -1,6 +1,6 @@
 #!/bin/bash
-swaylock \
---image /home/artin/Vshrd/Visual/backgrounds/cold/great_wall_winter.jpg \
+swaylock -f \
+--image /home/artin/Vshrd/Visual/backgrounds/dark/boat_of_charon.jpeg \
 --scaling stretch \
 --show-keyboard-layout \
 --color 252933 \

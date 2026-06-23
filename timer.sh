@@ -1,59 +1,86 @@
 #!/bin/bash
 
-# For gui entry, use zenity --entry
-arg=$1
-if [[ $arg == "k" ]]; then
-    dunstctl close-all
-    killall timer.sh
+PIDDIR=/tmp/timer.sh-pids
+mkdir -p "$PIDDIR"
+
+if [[ $1 == "k" ]]; then
+    makoctl dismiss -a -h
+    # mako leaves a stale surface behind when notifications on multiple
+    # anchors (e.g. clock top-right + timer bottom-center) are dismissed
+    # at once; reload forces it to redraw/clean up.
+    makoctl reload
+    for pidfile in "$PIDDIR"/*.pid; do
+        [[ -e $pidfile ]] || continue
+        pid=$(cat "$pidfile")
+        kill "$pid" 2>/dev/null
+        rm -f "$pidfile"
+    done
     exit
 fi
 
-entry=$(zenity --entry)
-DURATION=$(($entry * 60))  # 30 minutes
+run_clock() {
+    pidfile="$PIDDIR/clock.pid"
+    echo $$ > "$pidfile"
+    trap 'rm -f "$pidfile"' EXIT
 
-echo "Starting $entry minute countdown..."
+    while true; do
+        time=$(date +"%H:%M:%S")
+        date_str=$(date +"%A, %B %-d")
+        dunstify -a "clock" -r 77777 -t 0 -u low \
+                 --stack-tag clock \
+                 "$time" "$date_str"
+        sleep 1
+    done
+}
 
-# Clear existing notifications
-dunstctl close-all
+run_timer() {
+    entry=$(zenity --entry --text="Minutes to count down:")
+    [[ -z $entry ]] && exit
+    DURATION=$((entry * 60))
 
-remaining=$DURATION
-while [ $remaining -gt 0 ]; do
-    mins=$((remaining / 60))
-    secs=$((remaining % 60))
+    pidfile="$PIDDIR/timer.pid"
+    echo $$ > "$pidfile"
+    trap 'rm -f "$pidfile"' EXIT
 
-    # Calculate progress
-    progress=$((100 - (remaining * 100 / DURATION)))
-    bars=$((progress / 5))
+    echo "Starting $entry minute countdown..."
+    makoctl dismiss -a -h
 
-    # Create progress bar
-    printf -v progress_bar "[%-20s]" "$(printf '█%.0s' $(seq 1 $bars))"
+    remaining=$DURATION
+    while [ $remaining -gt 0 ]; do
+        mins=$((remaining / 60))
+        secs=$((remaining % 60))
 
-    # Set urgency based on time left
-    crit=$(( ($DURATION * 15) / 100 ))
-    urg=$(( ($DURATION * 30) / 100 ))
-    if [ $remaining -lt $crit ]; then  # Last 5 minutes
-        urgency="critical"
-        color="#bf616a"
-    elif [ $remaining -lt $urg ]; then  # Last 10 minutes
-        urgency="normal"
-        color="#FFA500"
-    else
-        urgency="low"
-        color="#FFFFFF"
-    fi
+        progress=$((100 - (remaining * 100 / DURATION)))
+        bars=$((progress / 5))
+        printf -v progress_bar "[%-20s]" "$(printf '█%.0s' $(seq 1 $bars))"
 
-    # Update notification
-    dunstify -r 88888 \
-             -t 0 \
-             -u "$urgency" \
-             -h "string:frcolor:$color" \
-             "⏰ $(printf "%02d:%02d" $mins $secs)" \
-             "$progress_bar ${progress}%"
+        crit=$(( (DURATION * 15) / 100 ))
+        urg=$(( (DURATION * 30) / 100 ))
+        if [ $remaining -lt $crit ]; then
+            urgency="critical"
+        elif [ $remaining -lt $urg ]; then
+            urgency="normal"
+        else
+            urgency="low"
+        fi
 
-    sleep 1
-    remaining=$((remaining - 1))
-done
+        dunstify -a "timer" -r 88888 -t 0 -u "$urgency" \
+                 --stack-tag timer \
+                 "⏰ $(printf "%02d:%02d" $mins $secs)" \
+                 "$progress_bar ${progress}%"
 
-# Final notification
-dunstify -r 88888 -t 5000 -u critical "✅ Timer Complete!" "$entry minutes have elapsed"
-echo "Timer finished!"
+        sleep 1
+        remaining=$((remaining - 1))
+    done
+
+    dunstify -a "timer" -r 88888 -t 5000 -u critical "✅ Timer Complete!" "$entry minutes have elapsed"
+    echo "Timer finished!"
+}
+
+mode=$(printf "Clock\nTimer" | fuzzel --dmenu --prompt="Mode: ")
+
+case "$mode" in
+    Clock) run_clock ;;
+    Timer) run_timer ;;
+    *) exit 0 ;;
+esac

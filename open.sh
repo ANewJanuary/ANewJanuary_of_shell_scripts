@@ -72,7 +72,7 @@ case "$selected" in
     ;;
 
   *.pdf)
-choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
+    choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
     case "$choice" in
       "zathura")
         zathura "$selected" &
@@ -111,7 +111,15 @@ choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
     ;;
 
   *.svg)
-    mupdf "$selected" &
+    choice=$(printf "mupdf\ndrawio" | fuzzel --dmenu --prompt "Pick: ")
+    case "$choice" in
+      "mupdf")
+        mupdf "$selected" &
+        ;;
+      "drawio")
+        drawio "$selected" &
+        ;;
+    esac
     ;;
 
   *.kra)

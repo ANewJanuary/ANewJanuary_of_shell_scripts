@@ -12,6 +12,8 @@ folders=(
   "fuzzel/"
   "ssh/"
   "niri/"
+  "DankMaterialShell/"
+  "mako/"
 )
 
 # local locations
