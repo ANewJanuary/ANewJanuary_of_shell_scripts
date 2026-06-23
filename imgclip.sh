@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-BASE_DIR="$HOME/LP"           # adjust to your actual LP root
+BASE_DIR="$HOME/Vshrd/LP/spe/attachments/"
 DOMAINS=("ECU" "BMS" "TSM")
 
 # --- capture ---
@@ -20,7 +20,7 @@ NEGATE=$(printf 'no\nyes\n' | fuzzel --dmenu --prompt "Negate colors? ")
 [ -z "$NEGATE" ] && exit 1
 
 # --- save ---
-TARGET_DIR="$BASE_DIR/attachments/$DOMAIN"
+TARGET_DIR="$BASE_DIR/$DOMAIN"
 mkdir -p "$TARGET_DIR"
 TARGET_FILE="$TARGET_DIR/$FILENAME.png"
 
