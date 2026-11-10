@@ -1,5 +1,3 @@
-#!/bin/bash
-
 cd "$HOME/" || exit 1
 
 SEARCH_PATHS=(
@@ -47,6 +45,9 @@ else
       ! -path '*/.git/*' \
       ! -path '*/node_modules/*' \
       ! -path '*/__pycache__/*' \
+      ! -path '*/.stfolder/*' \
+      ! -path '*/.mypy_cache/*' \
+      ! -path '*/.claude/*' \
       ! -path '*/music/*' \
       | fuzzel --dmenu -l 10 -w 100
   )
@@ -65,14 +66,14 @@ case "$selected" in
   *.sh|*.bash|*.fish|*.zsh|*.kdl|\
   *.py|*.rs|*.go|*.c|*.h|*.cpp|*.hpp|*.java|\
   *.js|*.ts|*.lua|*.nix|*.tex|*.typ|*.qmd|\
-  *.css|*.html|*.xml|\
+  *.css|*.html|*.xml|*.el|\
   *.conf|*.ini|*.cfg|*.org|*.asy|*.qml)
     echo $selected
-    "$HOME/Vshrd/shell-scripts/neovim_handler.sh" "$selected" &
+    emacsclient -a "" -n "$selected" &
     ;;
 
   *.pdf)
-    choice=$(printf "zathura\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
+    choice=$(printf "zathura\nmupdf-gl\nxournalpp\nkrita" | fuzzel --dmenu --prompt "Pick: ")
     case "$choice" in
       "zathura")
         zathura "$selected" &
@@ -83,11 +84,14 @@ case "$selected" in
       "krita")
         krita "$selected" &
         ;;
+      "mupdf-gl")
+        mupdf-gl -C 010200 -B FDFFFC "$selected" &
+        ;;
     esac
     ;;
 
   *.rnote)
-    flatpak run com.github.flxzt.rnote "$selected" &
+    rnote "$selected" &
     ;;
 
   *.epub)
@@ -132,7 +136,7 @@ case "$selected" in
 
   *)
     if file --mime-type -b "$selected" | grep -q "^text/"; then
-      $TERMINAL -e hx "$selected" &
+        emacsclient -a "" -n "$selected" &
     fi
     ;;
 esac

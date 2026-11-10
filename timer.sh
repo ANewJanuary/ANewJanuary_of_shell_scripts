@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PIDDIR=/tmp/timer.sh-pids
 mkdir -p "$PIDDIR"
@@ -18,10 +18,20 @@ if [[ $1 == "k" ]]; then
     exit
 fi
 
-run_clock() {
-    pidfile="$PIDDIR/clock.pid"
+# claim <name>: stop any already-running instance of this mode, then
+# register ourselves, so relaunching never leaves an orphaned loop behind.
+claim() {
+    pidfile="$PIDDIR/$1.pid"
+    if [[ -s $pidfile ]]; then
+        old=$(cat "$pidfile")
+        [[ $old != $$ ]] && kill "$old" 2>/dev/null
+    fi
     echo $$ > "$pidfile"
-    trap 'rm -f "$pidfile"' EXIT
+    trap "[[ \$(cat '$pidfile' 2>/dev/null) == $$ ]] && rm -f '$pidfile'" EXIT
+}
+
+run_clock() {
+    claim clock
 
     while true; do
         time=$(date +"%H:%M:%S")
@@ -38,9 +48,7 @@ run_timer() {
     [[ -z $entry ]] && exit
     DURATION=$((entry * 60))
 
-    pidfile="$PIDDIR/timer.pid"
-    echo $$ > "$pidfile"
-    trap 'rm -f "$pidfile"' EXIT
+    claim timer
 
     echo "Starting $entry minute countdown..."
     makoctl dismiss -a -h

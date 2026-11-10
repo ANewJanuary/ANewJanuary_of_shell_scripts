@@ -34,6 +34,8 @@ open_target() {
     nvim --server "$SOCKET" --remote "+$LINE" "$FILE"
   elif [[ -n "$FILE" ]]; then
     nvim --server "$SOCKET" --remote "$FILE"
+  else 
+    nvim --server "$SOCKET" -S /home/artin/Vshrd/config/nvim/spe.vim
   fi
 }
 

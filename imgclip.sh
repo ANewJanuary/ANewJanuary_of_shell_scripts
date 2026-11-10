@@ -1,17 +1,10 @@
-#!/bin/bash
 set -euo pipefail
 
-BASE_DIR="$HOME/Vshrd/LP/spe/attachments/"
-DOMAINS=("ECU" "BMS" "TSM")
+BASE_DIR="$HOME/Vshrd/LP/notes/attach"
 
-# --- capture ---
 REGION=$(slurp) || exit 1
 grim -g "$REGION" - | magick - -resize 80% -strip png:- | wl-copy --type image/png
-notify-send "Screenshot" "Captured, choose domain..."
-
-# --- prompts ---
-DOMAIN=$(printf '%s\n' "${DOMAINS[@]}" | fuzzel --dmenu --prompt "Domain: ")
-[ -z "$DOMAIN" ] && exit 1
+notify-send "Screenshot" "Captured"
 
 FILENAME=$(fuzzel --dmenu --prompt "Filename (no ext): " < /dev/null)
 [ -z "$FILENAME" ] && exit 1
@@ -19,9 +12,7 @@ FILENAME=$(fuzzel --dmenu --prompt "Filename (no ext): " < /dev/null)
 NEGATE=$(printf 'no\nyes\n' | fuzzel --dmenu --prompt "Negate colors? ")
 [ -z "$NEGATE" ] && exit 1
 
-# --- save ---
-TARGET_DIR="$BASE_DIR/$DOMAIN"
-mkdir -p "$TARGET_DIR"
+TARGET_DIR="$BASE_DIR"
 TARGET_FILE="$TARGET_DIR/$FILENAME.png"
 
 if [ -e "$TARGET_FILE" ]; then
@@ -35,11 +26,9 @@ if [ "$NEGATE" = "yes" ]; then
   magick "$TARGET_FILE" -negate "$TARGET_FILE"
 fi
 
-# --- emit Typst snippet to clipboard, ready to paste in ANY editor ---
-SNIPPET="#figure(
-  image(\"attachments/$DOMAIN/$FILENAME.png\"),
-  caption: [],
-) <fig-$DOMAIN-$FILENAME>"
+# now org mode
+SNIPPET="#+ATTR_ORG: :width 400 :align center
+[[file:$TARGET_FILE]]"
 
 printf '%s' "$SNIPPET" | wl-copy
 notify-send "Saved" "$TARGET_FILE — snippet on clipboard"
